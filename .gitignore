@@ -208,3 +208,9 @@ __marimo__/
 
 
 sample_data/
+data/
+
+*.mp4
+*.png
+*.jpg
+*.jpeg

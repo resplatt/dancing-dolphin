@@ -23,7 +23,14 @@ RUN apt-get update && apt-get install -y \
     libeigen3-dev \
     libxxf86vm-dev \
     libembree-dev \
+    ffmpeg \
+    colmap \
+    unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install
 
 # Install Miniconda
 ENV CONDA_DIR=/opt/conda
@@ -54,20 +61,19 @@ WORKDIR /opt/training
 RUN git clone https://github.com/resplatt/dancing-dolphin.git . && \
     git submodule update --init --recursive
 
-COPY sample_data/ sample_data/
-
 # Install project dependencies
 RUN cd 4DGaussians && \
     pip install -r requirements.txt && \
     pip install -e submodules/depth-diff-gaussian-rasterization && \
     pip install -e submodules/simple-knn
 
+RUN pip install nerfstudio
+
 # Copy training script (replace with your actual entrypoint)
 COPY train_gaussian.sh .
 RUN chmod +x train_gaussian.sh
 
 # Entrypoint using conda environment
-ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "Gaussians4D", "./train_gaussian.sh"]
-
-
+ENV QT_QPA_PLATFORM=offscreen
+ENTRYPOINT ["./train_gaussian.sh"]
 
