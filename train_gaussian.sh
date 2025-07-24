@@ -61,3 +61,17 @@ if [ ! -f "$CONFIG_PATH" ]; then
 fi
 
 python train.py -s "../$NERF_PATH/colmap" --port 6017 --expname "custom" --configs "$CONFIG_PATH"
+
+# -----------------------------
+# 5. upload results to S3
+# -----------------------------
+echo "📤 Uploading results to S3..."
+cd ..
+
+mkdir upload
+find 4DGaussians/output/custom -name point_cloud.ply -exec cp {} ./upload/ \;
+find 4DGaussians/output/custom -name deformation.pth -exec cp {} ./upload/ \;
+find 4DGaussians/output/custom -name deformation_table.pth -exec cp {} ./upload/ \;
+find 4DGaussians/output/custom -name deformation_accum.pth -exec cp {} ./upload/ \;
+
+aws s3 cp ./upload "$AWS_S3_UPLOAD_URL" || { echo "❌ Failed to upload results to S3."; exit 1; }
