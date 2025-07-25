@@ -71,9 +71,9 @@ RUN pip install nerfstudio
 
 # Copy training script (replace with your actual entrypoint)
 COPY train_gaussian.sh .
+ENV QT_QPA_PLATFORM=offscreen
 RUN chmod +x train_gaussian.sh
 
 # Entrypoint using conda environment
-ENV QT_QPA_PLATFORM=offscreen
 ENTRYPOINT ["./train_gaussian.sh"]
 

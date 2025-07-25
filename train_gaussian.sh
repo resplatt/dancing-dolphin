@@ -12,10 +12,11 @@ MODEL_ID=$(echo "$S3_KEY" | sed -n 's|.*/model_\([^/]*\)/.*|\1|p')
 
 
 AWS_S3_UPLOAD_URL="s3://$AWS_S3_UPLOAD_BUCKET/user_$USER_ID/model_$MODEL_ID/"
-echo "user_id $USER_ID"
-echo "model_id $MODEL_ID"
-echo "AWS S3 Download URL: $AWS_S3_UPLOAD_URL"
-echo "hihihihi"
+
+echo "user_id: $USER_ID"
+echo "model_id: $MODEL_ID"
+echo "AWS S3 Download URL: $AWS_S3_DOWNLOAD_URL"
+echo "AWS S3 Upload URL: $AWS_S3_UPLOAD_URL"
 
 # -----------------------------
 # 1. Download video from S3
@@ -27,7 +28,6 @@ if [ -z "$AWS_S3_DOWNLOAD_URL" ]; then
 fi
 
 aws s3 cp "$AWS_S3_DOWNLOAD_URL" input.mp4 || { echo "❌ Failed to download video."; exit 1; }
-exit 1
 
 
 # 🔑 Activate Conda env
